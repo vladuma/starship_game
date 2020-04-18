@@ -8,14 +8,20 @@ canvas {
     
     &.animateBackground {
         animation: animatedBackground 500s linear infinite;
-      }
+    }
 }
-  
-  @keyframes animatedBackground {
+.scoreEl {
+    position: absolute;
+    top: 0;
+    left: 1rem;
+    font-size: 3rem;
+    color: red;
+}
+@keyframes animatedBackground {
     from {
-      background-position: 0 0;
+        background-position: 0 0;
     }
     to {
-      background-position: 0 -10000px;
+        background-position: 0 -10000px;
     }
-  }
+}

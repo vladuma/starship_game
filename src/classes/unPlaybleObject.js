@@ -11,8 +11,7 @@ export default class UnPlayableObject extends GameObject {
         this.height = params.size * 2,
         this.speed = params.speed,
         this.collisionAction = params.collisionAction,
-        this.character = params.character,
-
+        this.game = params.game,
         this.imgPath = params.imgPath
     }
 
@@ -24,11 +23,11 @@ export default class UnPlayableObject extends GameObject {
     fall() {
         this.move()
 
-        if (this.y < canvas.height + this.size) {
+        if (this.y < this.game.canvas.height + this.size) {
             if (!this.collision()){
                 window.requestAnimationFrame(() => this.fall());
             } else {
-                window.game[this.collisionAction]();
+                this.game[this.collisionAction]();
                 this.collisionAction === 'scoreUp' ? this.clearRect() : null;
             }
         } else {
@@ -37,10 +36,10 @@ export default class UnPlayableObject extends GameObject {
         }
     }
     collision() {
-        return (this.character.x < this.x + this.width &&
-                this.character.x + this.character.width > this.x &&
-                this.character.y < this.y + this.height &&
-                this.character.y + this.character.height > this.y);
+        return (this.game.character.x < this.x + this.width &&
+                this.game.character.x + this.game.character.width > this.x &&
+                this.game.character.y < this.y + this.height &&
+                this.game.character.y + this.game.character.height > this.y);
     }
     pause() {
         this.speed = 0

@@ -3,13 +3,14 @@ import GameObject from'./gameObject';
 export default class PlayableObject extends GameObject {
     constructor(params) {
         super(params);
-        
+
+        this.game = params.game,
         this.width = params.width,
         this.height = params.height,
         this.floatDistance = params.floatDistance,
         this.stepDistance = params.stepDistance,
-        this.x = (canvas.width - this.width) / 2,
-        this.y = canvas.height - this.height - this.stepDistance
+        this.x = (this.game.canvas.width - this.width) / 2,
+        this.y = this.game.canvas.height - this.height - this.stepDistance
         this.imgPath = params.imgPath
     }
 
@@ -38,8 +39,8 @@ export default class PlayableObject extends GameObject {
         if (this.x <= 0) {
             this.x = 0;
         }
-        if (this.x >= canvas.width - this.width) {
-            this.x = canvas.width - this.width;
+        if (this.x >= this.game.canvas.width - this.width) {
+            this.x = this.game.canvas.width - this.width;
         }
     }
 }
