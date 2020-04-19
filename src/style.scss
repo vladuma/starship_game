@@ -1,27 +1,37 @@
-canvas {
-    border: 1px solid black;
-    
-    background: url('images/background.png');
-    background-repeat: repeat;
-    background-position: 0 0;
-    background-size: auto 100%;
-    
-    &.animateBackground {
-        animation: animatedBackground 500s linear infinite;
-    }
-}
-.scoreEl {
-    position: absolute;
-    top: 0;
-    left: 1rem;
-    font-size: 3rem;
-    color: red;
-}
 @keyframes animatedBackground {
     from {
         background-position: 0 0;
     }
     to {
         background-position: 0 -10000px;
+    }
+}
+
+.gameContainer {
+    display: flex;
+    justify-content: center;
+
+    .gameWrapper {
+        position: relative;
+        
+        canvas {
+            border: 1px solid black;
+            
+            background: url('images/background.png');
+            background-repeat: repeat;
+            background-position: 0 0;
+            background-size: auto 100%;
+            
+            &.animateBackground {
+                animation: animatedBackground 500s linear infinite;
+            }
+        }
+        .scoreEl {
+            position: absolute;
+            top: 0;
+            left: 1rem;
+            font-size: 3rem;
+            color: red;
+        }
     }
 }

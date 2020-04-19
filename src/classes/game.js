@@ -10,17 +10,15 @@ import 'normalize.css'
 
 export default class Game {
     constructor() {
-        this.canvas = this.createCanvas(),
-        this.canvasCtx = this.canvas.getContext('2d');
-        
+        this.startGame();
+
+        this.canvasSpeed = 600;
         this.score = 0
-        this.obstacles = []
-        this.food = []
     
         this.character = new PlayableObject({
             width: 100,
             height: 107,
-            floatDistance: 150,
+            floatDistance: 50,
             stepDistance: 15,
             imgPath: xWing,
             game: this
@@ -41,39 +39,49 @@ export default class Game {
             imgPath: food,
             game: this
         });
+        
+        this.drawElements();
     }
-
-    createCanvas() {
-        const canvas = document.createElement('canvas');
-        canvas.width = window.innerWidth <= 500 ? window.innerWidth: 500;
-        canvas.height = window.innerHeight <= 900 ? window.innerHeight : 900;
-
-        canvas.className = "animateBackground";
-        document.body.appendChild(canvas);
-
-        return canvas;
-    }
-
     startGame() {
-        this.createScoreElement();
+        this.buildGameLayout();
         this.createcontrolListeners();
+    }
+    createCanvas() {
+        this.canvas = document.createElement('canvas');
+        this.canvas.width = window.innerWidth <= 500 ? window.innerWidth: 500;
+        this.canvas.height = window.innerHeight <= 900 ? window.innerHeight : 900;
+        this.canvas.className = "animateBackground";
+        this.canvas.style.animationDuration = `${this.canvasSpeed}s`;
 
-        setTimeout(() => {
-            this.character.draw();
-            this.obstacleFactory.start();
-            this.foodFactory.start();
-        }, 1000);
+        this.canvasCtx = this.canvas.getContext('2d');
     }
-    scoreUp() {
-        this.score++
-        this.scoreEl.innerHTML = this.score
-        this.levelUp()
+    createScoreElement() {
+        this.scoreEl = document.createElement('span');
+        this.scoreEl.innerHTML = 0;
+        this.scoreEl.className = "scoreEl";
     }
-    levelUp() {
-        this.obstacleFactory.levelUp();
-        this.foodFactory.levelUp();
-    }
+    buildGameLayout() {
+        this.createCanvas();
+        this.createScoreElement();
 
+        const container = document.createElement('div');
+        const wrapper = document.createElement('div');
+
+        container.className = "gameContainer";
+        wrapper.className = "gameWrapper";
+
+        wrapper.appendChild(this.canvas);
+        wrapper.appendChild(this.scoreEl);
+        
+        container.appendChild(wrapper);
+
+        document.body.appendChild(container);
+    }
+    drawElements() {
+        this.character.draw();
+        this.obstacleFactory.start();
+        this.foodFactory.start();
+    }
     createcontrolListeners() {
         document.body.addEventListener('keypress', (e) => {
             this.controls(e.keyCode);
@@ -83,7 +91,6 @@ export default class Game {
             this.controls('drag', e);
         })
     }
-
     controls (keyCode, e) {
         switch (keyCode) {
             case 97:
@@ -99,7 +106,6 @@ export default class Game {
                 return false;
         }
     }
-
     getTouchPosition (e) {
         var touch = e.touches['0'];
         var mouseEvent = new MouseEvent("mousemove", {
@@ -108,27 +114,19 @@ export default class Game {
         });
         return mouseEvent.x;
     }
+    scoreUp() {
+        this.score++;
+        this.scoreEl.innerHTML = this.score;
+        // this.canvasSpeed -= 10;
 
-    generateFood() {
-        const yPos = Math.floor(Math.random() * this.canvas.width);
-        const food = new CreateFood(yPos);
-        
-        this.food.push(food);
+        // this.canvas.style.animationDuration = this.canvasSpeed <= 10 ? 10 : `${this.canvasSpeed}s`;
 
-        food.fall();
+        this.obstacleFactory.levelUp();
+        this.foodFactory.levelUp();
     }
-
     gameOver() {
         this.canvas.className = "";
         this.obstacleFactory.stop();
         this.foodFactory.stop();
-    }
-
-    createScoreElement() {
-        this.scoreEl = document.createElement('span');
-        this.scoreEl.innerHTML = 0;
-        this.scoreEl.className = "scoreEl";
-
-        document.body.appendChild(this.scoreEl);
     }
 }
