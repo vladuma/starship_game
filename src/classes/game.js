@@ -11,7 +11,7 @@ import 'normalize.css'
 export default class Game {
     constructor() {
         this.startGame();
-
+        this.gameStarted = false;
         this.canvasSpeed = 600;
         this.score = 0
     
@@ -39,12 +39,13 @@ export default class Game {
             imgPath: food,
             game: this
         });
-        
+
         this.drawElements();
     }
     startGame() {
         this.buildGameLayout();
-        this.createcontrolListeners();
+        this.buildMenuLayout();
+        this.createControlListeners();
     }
     createCanvas() {
         this.canvas = document.createElement('canvas');
@@ -64,25 +65,47 @@ export default class Game {
         this.createCanvas();
         this.createScoreElement();
 
-        const container = document.createElement('div');
-        const wrapper = document.createElement('div');
+        this.container = document.createElement('div');
+        this.wrapper = document.createElement('div');
 
-        container.className = "gameContainer";
-        wrapper.className = "gameWrapper";
+        this.container.className = "gameContainer";
+        this.wrapper.className = "gameWrapper";
 
-        wrapper.appendChild(this.canvas);
-        wrapper.appendChild(this.scoreEl);
+        this.wrapper.appendChild(this.canvas);
+        this.wrapper.appendChild(this.scoreEl);
         
-        container.appendChild(wrapper);
+        this.container.appendChild(this.wrapper);
 
-        document.body.appendChild(container);
+        document.body.appendChild(this.container);
+    }
+    buildMenuLayout() {
+        this.menuBurger = document.createElement('div');
+        this.overlay = document.createElement('div');
+        this.restartButton = document.createElement('button');
+        this.restartIcon = document.createElement('i');
+        this.burgerIcon = document.createElement('i');
+        
+        this.menuBurger.className = "menuBurger";
+        this.burgerIcon.className = "fas fa-bars";
+        this.restartButton.className = "restartButton";
+        this.restartIcon.className = "fas fa-undo";
+        this.overlay.className = "gameOverlay";
+        
+        this.restartButton.innerHTML = "Restart Game";
+
+        this.menuBurger.appendChild(this.burgerIcon);
+        this.restartButton.appendChild(this.restartIcon);
+        this.overlay.appendChild(this.restartButton);
+        
+        this.wrapper.appendChild(this.overlay);
+        this.wrapper.appendChild(this.menuBurger);
     }
     drawElements() {
         this.character.draw();
         this.obstacleFactory.start();
         this.foodFactory.start();
     }
-    createcontrolListeners() {
+    createControlListeners() {
         document.body.addEventListener('keypress', (e) => {
             this.controls(e.keyCode);
         })
