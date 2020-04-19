@@ -33,13 +33,19 @@ $secondaryAccentColor: #7649fe;
             
             &.animateBackground {
                 animation: animatedBackground 500s linear infinite;
+                
+                &.pauseAnimation {
+                    animation-play-state: paused;
+                }
             }
         }
         .scoreEl {
             position: absolute;
             top: 0;
             left: 1rem;
+            font-family: 'Gruppo', cursive;
             font-size: 3rem;
+            line-height: 4rem;
             color: $secondaryColor;
         }
         .gameOverlay {
@@ -53,7 +59,7 @@ $secondaryAccentColor: #7649fe;
             align-items: center;
             background-image: radial-gradient(circle, rgba(29, 17, 53, 0.5), rgba(26, 18, 56, 0.5), rgba(23, 19, 59, 0.5), rgba(18, 21, 62, 0.5), rgba(12, 22, 65, 0.5));;
 
-            .restartButton {
+            .gameMenuButton {
                 padding: 15px 20px;
                 text-transform: uppercase;
                 font-family: 'Gruppo', cursive;
@@ -66,12 +72,17 @@ $secondaryAccentColor: #7649fe;
                     margin-left: 1ch;
                 }
             }
+
+            &.hide {
+                display: none;
+            }
         }
         .menuBurger {
             position: absolute;
             top: 0;
             right: 1rem;
             font-size: 3rem;
+            line-height: 4rem;
             color: $secondaryColor;
         }
     }

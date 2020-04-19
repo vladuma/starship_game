@@ -10,6 +10,7 @@ export default class UnPlayableObject extends GameObject {
         this.width = params.size * 2,
         this.height = params.size * 2,
         this.speed = params.speed,
+        this.defaultSpeed = this.speed,
         this.collisionAction = params.collisionAction,
         this.game = params.game,
         this.imgPath = params.imgPath
@@ -41,7 +42,11 @@ export default class UnPlayableObject extends GameObject {
                 this.game.character.y < this.y + this.height &&
                 this.game.character.y + this.game.character.height > this.y);
     }
-    pause() {
+    resume() {
+        this.speed = this.savedSpeed ? this.savedSpeed : this.defaultSpeed;
+    }
+    stop() {
+        this.savedSpeed = this.speed;
         this.speed = 0
     }
 }

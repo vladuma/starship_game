@@ -10,11 +10,37 @@ import 'normalize.css'
 
 export default class Game {
     constructor() {
-        this.startGame();
-        this.gameStarted = false;
+        this.init();
+        this.gamePaused = false;
+        this.gameIsOver = false;
         this.canvasSpeed = 600;
         this.score = 0
-    
+    }
+    init() {
+        this.buildGameLayout();
+        this.buildMenuLayout();
+        this.createControlListeners();
+    }
+    startGame() {
+        this.createGameObjects();
+        this.drawElements();
+        this.hideMenu();
+    }
+    createCanvas() {
+        this.canvas = document.createElement('canvas');
+        this.canvas.width = window.innerWidth <= 500 ? window.innerWidth: 500;
+        this.canvas.height = window.innerHeight <= 900 ? window.innerHeight : 900;
+        this.canvas.className = "animateBackground pauseAnimation";
+        this.canvas.style.animationDuration = `${this.canvasSpeed}s`;
+
+        this.canvasCtx = this.canvas.getContext('2d');
+    }
+    createScoreElement() {
+        this.scoreEl = document.createElement('span');
+        this.scoreEl.innerHTML = 0;
+        this.scoreEl.className = "scoreEl";
+    }
+    createGameObjects() {
         this.character = new PlayableObject({
             width: 100,
             height: 107,
@@ -39,27 +65,6 @@ export default class Game {
             imgPath: food,
             game: this
         });
-
-        this.drawElements();
-    }
-    startGame() {
-        this.buildGameLayout();
-        this.buildMenuLayout();
-        this.createControlListeners();
-    }
-    createCanvas() {
-        this.canvas = document.createElement('canvas');
-        this.canvas.width = window.innerWidth <= 500 ? window.innerWidth: 500;
-        this.canvas.height = window.innerHeight <= 900 ? window.innerHeight : 900;
-        this.canvas.className = "animateBackground";
-        this.canvas.style.animationDuration = `${this.canvasSpeed}s`;
-
-        this.canvasCtx = this.canvas.getContext('2d');
-    }
-    createScoreElement() {
-        this.scoreEl = document.createElement('span');
-        this.scoreEl.innerHTML = 0;
-        this.scoreEl.className = "scoreEl";
     }
     buildGameLayout() {
         this.createCanvas();
@@ -79,26 +84,33 @@ export default class Game {
         document.body.appendChild(this.container);
     }
     buildMenuLayout() {
-        this.menuBurger = document.createElement('div');
+        this.menuBurger = document.createElement('span');
         this.overlay = document.createElement('div');
-        this.restartButton = document.createElement('button');
-        this.restartIcon = document.createElement('i');
+        this.gameMenuButton = document.createElement('button');
+        this.gameMenuButtonIcon = document.createElement('i');
         this.burgerIcon = document.createElement('i');
         
         this.menuBurger.className = "menuBurger";
         this.burgerIcon.className = "fas fa-bars";
-        this.restartButton.className = "restartButton";
-        this.restartIcon.className = "fas fa-undo";
+        this.gameMenuButton.className = "gameMenuButton";
+        this.gameMenuButtonIcon.className = "fas fa-arrow-right";
         this.overlay.className = "gameOverlay";
         
-        this.restartButton.innerHTML = "Restart Game";
+        this.gameMenuButton.innerHTML = "Start Game";
 
         this.menuBurger.appendChild(this.burgerIcon);
-        this.restartButton.appendChild(this.restartIcon);
-        this.overlay.appendChild(this.restartButton);
+        this.gameMenuButton.appendChild(this.gameMenuButtonIcon);
+        this.overlay.appendChild(this.gameMenuButton);
         
         this.wrapper.appendChild(this.overlay);
         this.wrapper.appendChild(this.menuBurger);
+    }
+    updateGameMenu() {
+        if (this.gamePaused) {
+            this.gameMenuButton.innerHTML = "Restart Game";
+            this.gameMenuButtonIcon.className = "fas fa-undo";
+            this.gameMenuButton.appendChild(this.gameMenuButtonIcon);
+        }
     }
     drawElements() {
         this.character.draw();
@@ -113,6 +125,23 @@ export default class Game {
         this.canvas.addEventListener('touchmove', (e) => {
             this.controls('drag', e);
         })
+
+        this.menuBurger.addEventListener('click', (e) => {
+            if(!this.gameIsOver) {
+                this.overlay.classList.contains("hide") ?  this.pauseGame() + this.showMenu() : this.resumeGame() + this.hideMenu();
+            }
+        })
+
+        this.gameMenuButton.addEventListener('click', (e) => {
+            this.gamePaused ? this.restartGame() : this.startGame();
+        })
+    }
+    showMenu() {
+        this.updateGameMenu();
+        this.overlay.classList.remove("hide");
+    }
+    hideMenu() {
+        this.overlay.classList.add('hide');
     }
     controls (keyCode, e) {
         switch (keyCode) {
@@ -140,16 +169,42 @@ export default class Game {
     scoreUp() {
         this.score++;
         this.scoreEl.innerHTML = this.score;
-        // this.canvasSpeed -= 10;
-
-        // this.canvas.style.animationDuration = this.canvasSpeed <= 10 ? 10 : `${this.canvasSpeed}s`;
 
         this.obstacleFactory.levelUp();
         this.foodFactory.levelUp();
     }
-    gameOver() {
-        this.canvas.className = "";
+    pauseGame() {
+        this.gamePaused = true;
+        this.canvas.classList.add('pauseAnimation');
         this.obstacleFactory.stop();
         this.foodFactory.stop();
+    }
+    resumeGame() {   
+        this.gamePaused = false;
+        this.canvas.classList.remove('pauseAnimation');
+        this.obstacleFactory.resume();
+        this.foodFactory.resume();
+    }
+    restartGame() {
+        this.container.parentNode.removeChild(this.container);
+        this.obstacleFactory.destroy();
+        this.obstacleFactory = null;
+        this.foodFactory.destroy();
+        this.foodFactory = null;
+        this.gamePaused = false;
+        this.gameIsOver = false;
+        this.score = 0;
+        this.init();
+        this.hideMenu();
+        this.startGame();
+        this.canvas.classList.remove('pauseAnimation');
+    }
+    gameOver() {
+        this.gameIsOver = true;
+        this.gamePaused = true;
+
+        this.pauseGame();
+        this.showMenu();
+        this.canvas.classList.add('pauseAnimation');
     }
 }

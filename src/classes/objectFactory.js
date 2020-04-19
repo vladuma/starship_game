@@ -12,32 +12,54 @@ export default class ObjectFactory {
     }
 
     start() {
-        this.interval = setInterval(this.createObstacle, this.spawnSpeed, this);
+        this.interval = setInterval(() => {
+            this.createObstacle();
+        }, this.spawnSpeed);
     }
-    createObstacle(self) {
+    createObstacle() {
+        // console.log(this);
         const xPos = Math.floor(Math.random() * this.game.canvas.width);
-        self.object = new UnPlaybleObject({
+        this.object = new UnPlaybleObject({
             size: (Math.floor(Math.random() * 3) + 1) * 10,
             x: xPos,
-            speed: self.speed,
-            character: self.character,
-            imgPath: self.imgPath,
-            collisionAction: self.collisionAction,
-            game: self.game,
+            speed: this.speed,
+            character: this.character,
+            imgPath: this.imgPath,
+            collisionAction: this.collisionAction,
+            game: this.game,
         });
         
-        self.objects.push(self.object);
+        this.objects.push(this.object);
 
-        self.object.fall();
+        this.object.fall();
     }
     levelUp() {
         this.spawnSpeed <= 0 ? this.spawnSpeed -= 150 : 150 ;
         this.speed += 0.10;
     }
-    stop() {
+    resume() {
+        this.start();
         this.objects.forEach(object => {
-            object.pause();
-            clearInterval(this.interval);
+            object.resume();
         })
+    }
+    stop() {
+        clearInterval(this.interval);
+
+        this.objects.forEach(object => {
+            object.stop();
+        })
+    }
+    destroy() {
+        clearInterval(this.interval);
+
+        this.objects.forEach(object => {
+            object.stop();
+            object.x = -100;
+            object.y = -100;
+        })
+        this.objects = null;
+        this.interval = null;
+
     }
 }
