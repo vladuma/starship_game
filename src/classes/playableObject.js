@@ -10,7 +10,7 @@ export default class PlayableObject extends GameObject {
         this.floatDistance = params.floatDistance,
         this.stepDistance = params.stepDistance,
         this.x = (this.game.canvas.width - this.width) / 2,
-        this.y = this.game.canvas.height - this.height - this.stepDistance
+        this.y = this.game.canvas.height - this.height - this.floatDistance
         this.imgPath = params.imgPath
     }
 
