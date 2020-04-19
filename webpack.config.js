@@ -35,7 +35,12 @@ module.exports = {
       filename: isDevelopment ? '[name].css' : '[name].[hash].css',
       chunkFilename: isDevelopment ? '[id].css' : '[id].[hash].css'
     }),
-    new HtmlWebpackPlugin()
+    new HtmlWebpackPlugin({
+      title: 'Starship Game',
+      template: './src/index.html',
+      inject: 'body',
+      hash: true,
+    })
   ],
   resolve: {
     extensions: ['.js', '.scss']
