@@ -25,6 +25,7 @@ export default class Game {
         this.createGameObjects();
         this.drawElements();
         this.hideMenu();
+        this.canvas.classList.remove('pauseAnimation');
     }
     createCanvas() {
         this.canvas = document.createElement('canvas');
@@ -86,6 +87,7 @@ export default class Game {
     buildMenuLayout() {
         this.menuBurger = document.createElement('span');
         this.overlay = document.createElement('div');
+        this.overlayHeading = document.createElement('div');
         this.gameMenuButton = document.createElement('button');
         this.gameMenuButtonIcon = document.createElement('i');
         this.burgerIcon = document.createElement('i');
@@ -94,12 +96,15 @@ export default class Game {
         this.burgerIcon.className = "fas fa-bars";
         this.gameMenuButton.className = "gameMenuButton";
         this.gameMenuButtonIcon.className = "fas fa-arrow-right";
+        this.overlayHeading.className = "gameOverlayHeading";
         this.overlay.className = "gameOverlay";
         
+        this.overlayHeading.innerHTML = "Starship</br>Game";
         this.gameMenuButton.innerHTML = "Start Game";
 
         this.menuBurger.appendChild(this.burgerIcon);
         this.gameMenuButton.appendChild(this.gameMenuButtonIcon);
+        this.overlay.appendChild(this.overlayHeading);
         this.overlay.appendChild(this.gameMenuButton);
         
         this.wrapper.appendChild(this.overlay);
@@ -174,6 +179,8 @@ export default class Game {
         this.foodFactory.levelUp();
     }
     pauseGame() {
+        this.overlayHeading.innerHTML = "Paused";
+
         this.gamePaused = true;
         this.canvas.classList.add('pauseAnimation');
         this.obstacleFactory.stop();
@@ -197,7 +204,6 @@ export default class Game {
         this.init();
         this.hideMenu();
         this.startGame();
-        this.canvas.classList.remove('pauseAnimation');
     }
     gameOver() {
         this.gameIsOver = true;
@@ -205,6 +211,8 @@ export default class Game {
 
         this.pauseGame();
         this.showMenu();
+        this.overlayHeading.innerHTML = "Game Over";
+
         this.canvas.classList.add('pauseAnimation');
     }
 }

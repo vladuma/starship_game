@@ -6,7 +6,7 @@
         background-position: 0 0;
     }
     to {
-        background-position: 0 -10000px;
+        background-position: 0 10000px;
     }
 }
 
@@ -55,10 +55,19 @@ $secondaryAccentColor: #7649fe;
             width: 100%;
             height: 100%;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             background-image: radial-gradient(circle, rgba(29, 17, 53, 0.5), rgba(26, 18, 56, 0.5), rgba(23, 19, 59, 0.5), rgba(18, 21, 62, 0.5), rgba(12, 22, 65, 0.5));;
 
+            .gameOverlayHeading {
+                margin-bottom: 7rem;
+                text-align: center;
+                font-family: Monoton;
+                font-size: 3rem;
+                color: $secondaryColor;
+                text-transform: uppercase;
+            }
             .gameMenuButton {
                 padding: 15px 20px;
                 text-transform: uppercase;
